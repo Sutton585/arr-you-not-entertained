@@ -25,7 +25,7 @@ services:
       - /dev/dri:/dev/dri # GPU access for transcoding
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.${PUBLIC_HOST}`) || Host(`media.${PUBLIC_HOST}`) || Host(`jellyfin.${PRIVATE_HOST}`) || Host(`media.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.${PUBLIC_HOST:-localhost}`) || Host(`media.${PUBLIC_HOST:-localhost}`) || Host(`jellyfin.${PRIVATE_HOST}`) || Host(`media.${PRIVATE_HOST}`)"
       - "traefik.http.routers.jellyfin.entrypoints=websecure"
       - "traefik.http.routers.jellyfin.tls=true"
       - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
@@ -47,7 +47,7 @@ services:
       - "8989:8989"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${PUBLIC_HOST}`) || Host(`sonarr.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${PUBLIC_HOST:-localhost}`) || Host(`sonarr.${PRIVATE_HOST}`)"
       - "traefik.http.routers.sonarr.entrypoints=websecure"
       - "traefik.http.routers.sonarr.tls=true"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
@@ -69,7 +69,7 @@ services:
       - "7878:7878"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.radarr.rule=Host(`radarr.${PUBLIC_HOST}`) || Host(`radarr.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.${PUBLIC_HOST:-localhost}`) || Host(`radarr.${PRIVATE_HOST}`)"
       - "traefik.http.routers.radarr.entrypoints=websecure"
       - "traefik.http.routers.radarr.tls=true"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
@@ -90,7 +90,7 @@ services:
       - "9696:9696"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${PUBLIC_HOST}`) || Host(`prowlarr.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${PUBLIC_HOST:-localhost}`) || Host(`prowlarr.${PRIVATE_HOST}`)"
       - "traefik.http.routers.prowlarr.entrypoints=websecure"
       - "traefik.http.routers.prowlarr.tls=true"
       - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
@@ -111,7 +111,7 @@ services:
       - "9117:9117"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jackett.rule=Host(`jackett.${PUBLIC_HOST}`) || Host(`jackett.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.jackett.rule=Host(`jackett.${PUBLIC_HOST:-localhost}`) || Host(`jackett.${PRIVATE_HOST}`)"
       - "traefik.http.routers.jackett.entrypoints=websecure"
       - "traefik.http.routers.jackett.tls=true"
       - "traefik.http.services.jackett.loadbalancer.server.port=9117"
@@ -133,7 +133,7 @@ services:
       - "6767:6767"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bazarr.rule=Host(`bazarr.${PUBLIC_HOST}`) || Host(`bazarr.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.${PUBLIC_HOST:-localhost}`) || Host(`bazarr.${PRIVATE_HOST}`)"
       - "traefik.http.routers.bazarr.entrypoints=websecure"
       - "traefik.http.routers.bazarr.tls=true"
       - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
@@ -156,7 +156,7 @@ services:
       - "13378:80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.audiobookshelf.rule=Host(`audiobookshelf.${PUBLIC_HOST}`) || Host(`abs.${PUBLIC_HOST}`) || Host(`audiobookshelf.${PRIVATE_HOST}`) || Host(`abs.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.audiobookshelf.rule=Host(`audiobookshelf.${PUBLIC_HOST:-localhost}`) || Host(`abs.${PUBLIC_HOST:-localhost}`) || Host(`audiobookshelf.${PRIVATE_HOST}`) || Host(`abs.${PRIVATE_HOST}`)"
       - "traefik.http.routers.audiobookshelf.entrypoints=websecure"
       - "traefik.http.routers.audiobookshelf.tls=true"
       - "traefik.http.services.audiobookshelf.loadbalancer.server.port=80"
@@ -208,7 +208,7 @@ services:
       - jellyfin
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.seerr.rule=Host(`seerr.${PUBLIC_HOST}`) || Host(`request.${PUBLIC_HOST}`) || Host(`seerr.${PRIVATE_HOST}`) || Host(`request.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.seerr.rule=Host(`seerr.${PUBLIC_HOST:-localhost}`) || Host(`request.${PUBLIC_HOST:-localhost}`) || Host(`seerr.${PRIVATE_HOST}`) || Host(`request.${PRIVATE_HOST}`)"
       - "traefik.http.routers.seerr.entrypoints=websecure"
       - "traefik.http.routers.seerr.tls=true"
       - "traefik.http.services.seerr.loadbalancer.server.port=5055"
@@ -231,7 +231,7 @@ services:
      - "5299:5299"
    labels:
      - "traefik.enable=true"
-     - "traefik.http.routers.lazylibrarian.rule=Host(`lazylibrarian.${PUBLIC_HOST}`) || Host(`ll.${PUBLIC_HOST}`) || Host(`lazylibrarian.${PRIVATE_HOST}`) || Host(`ll.${PRIVATE_HOST}`)"
+     - "traefik.http.routers.lazylibrarian.rule=Host(`lazylibrarian.${PUBLIC_HOST:-localhost}`) || Host(`ll.${PUBLIC_HOST:-localhost}`) || Host(`lazylibrarian.${PRIVATE_HOST}`) || Host(`ll.${PRIVATE_HOST}`)"
      - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
      - "traefik.http.routers.lazylibrarian.tls=true"
      - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
