@@ -234,4 +234,8 @@ services:
      - "traefik.http.routers.lazylibrarian.rule=Host(`lazylibrarian.${PUBLIC_HOST}`) || Host(`ll.${PUBLIC_HOST}`) || Host(`lazylibrarian.${PRIVATE_HOST}`) || Host(`ll.${PRIVATE_HOST}`)"
      - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
      - "traefik.http.routers.lazylibrarian.tls=true"
-     - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
+     - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299
+
+networks:
+  bully_default:
+    external: true"
