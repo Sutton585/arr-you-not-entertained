@@ -214,28 +214,24 @@ services:
       - "traefik.http.services.seerr.loadbalancer.server.port=5055"
 
   lazylibrarian:
-   image: lscr.io/linuxserver/lazylibrarian:latest
-   profiles: [time-out]
-   container_name: lazylibrarian
-   networks:
+    image: lscr.io/linuxserver/lazylibrarian:latest
+    profiles: [time-out]
+    container_name: lazylibrarian
+    networks:
       - ${DOCKER_NETWORK}
-   restart: unless-stopped
-   environment:
-     - PUID=1000
-     - PGID=1000
-     - TZ=America/New_York
-   volumes:
-     - ${CONFIG}/lazylibrarian:/config
-     - ${MEDIA}:/data # Downloads at /data/downloads/complete, books at /data/books, etc.
-   ports:
-     - "5299:5299"
-   labels:
-     - "traefik.enable=true"
-     - "traefik.http.routers.lazylibrarian.rule=Host(`lazylibrarian.${PUBLIC_HOST}`) || Host(`ll.${PUBLIC_HOST}`) || Host(`lazylibrarian.${PRIVATE_HOST}`) || Host(`ll.${PRIVATE_HOST}`)"
-     - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
-     - "traefik.http.routers.lazylibrarian.tls=true"
-     - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299
-
-networks:
-  bully_default:
-    external: true"
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - ${CONFIG}/lazylibrarian:/config
+      - ${MEDIA}:/data # Downloads at /data/downloads/complete, books at /data/books, etc.
+    ports:
+      - "5299:5299"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lazylibrarian.rule=Host(`lazylibrarian.${PUBLIC_HOST}`) || Host(`ll.${PUBLIC_HOST}`) || Host(`lazylibrarian.${PRIVATE_HOST}`) || Host(`ll.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
+      - "traefik.http.routers.lazylibrarian.tls=true"
+      - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
