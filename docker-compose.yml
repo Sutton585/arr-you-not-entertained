@@ -1,7 +1,8 @@
 name: arr
 
 networks:
-  ${DOCKER_NETWORK}:
+  default:
+    name: bully_network
     external: true
 
 services:
@@ -9,8 +10,7 @@ services:
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
-    networks:
-      - ${DOCKER_NETWORK}
+    profiles: [core]
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -30,11 +30,54 @@ services:
       - "traefik.http.routers.jellyfin.tls=true"
       - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
 
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    profiles: [core]
+    container_name: qbittorrent
+    restart: unless-stopped
+    network_mode: bridge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - WEBUI_PORT=8080
+    volumes:
+      - ${CONFIG}/qbittorrent:/config
+      - ${MEDIA}:/data      # Downloads land at /data/downloads/complete and /incomplete
+    ports:
+      - "8081:8080"         # Host port 8081: 8080 taken by Traefik dashboard, 8082 by NocoDB
+      - "6881:6881"         # Torrent peer port TCP
+      - "6881:6881/udp"     # Torrent peer port UDP
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${PUBLIC_HOST}`) || Host(`qbt.${PUBLIC_HOST}`) || Host(`qbittorrent.${PRIVATE_HOST}`) || Host(`qbt.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.qbittorrent.entrypoints=websecure"
+      - "traefik.http.routers.qbittorrent.tls=true"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
+  
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    profiles: [core]
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - ${CONFIG}/prowlarr:/config
+    ports:
+      - "9696:9696"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${PUBLIC_HOST}`) || Host(`prowlarr.${PRIVATE_HOST}`)"
+      - "traefik.http.routers.prowlarr.entrypoints=websecure"
+      - "traefik.http.routers.prowlarr.tls=true"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -55,8 +98,6 @@ services:
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -74,32 +115,9 @@ services:
       - "traefik.http.routers.radarr.tls=true"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    networks:
-      - ${DOCKER_NETWORK}
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-    volumes:
-      - ${CONFIG}/prowlarr:/config
-    ports:
-      - "9696:9696"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${PUBLIC_HOST}`) || Host(`prowlarr.${PRIVATE_HOST}`)"
-      - "traefik.http.routers.prowlarr.entrypoints=websecure"
-      - "traefik.http.routers.prowlarr.tls=true"
-      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
-
   jackett:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -119,8 +137,6 @@ services:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -141,8 +157,6 @@ services:
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
     container_name: audiobookshelf
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -169,8 +183,6 @@ services:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     profiles: [time-out]
     container_name: flaresolverr
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - LOG_LEVEL=debug
@@ -187,8 +199,6 @@ services:
     profiles: [time-out]
     init: true
     container_name: seerr
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - LOG_LEVEL=info
@@ -217,8 +227,6 @@ services:
     image: lscr.io/linuxserver/lazylibrarian:latest
     profiles: [time-out]
     container_name: lazylibrarian
-    networks:
-      - ${DOCKER_NETWORK}
     restart: unless-stopped
     environment:
       - PUID=1000
