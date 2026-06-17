@@ -12,9 +12,9 @@ MY_DOMAIN=
 #########################################
 # Where are your critical directories? 	#
 #########################################
-CONFIG=/path/to/config-directory
+CONFIG=/path/to/config-directory/for/all/services
 VAULTS=${CONFIG}/vaults
-MEDIA=/path/to/media-directory
+MEDIA=/path/to/media-drive/for/jellyfin
 
 #################################
 #   TRAEFIK / SSL  Defaults.	#
