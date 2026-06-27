@@ -1,12 +1,14 @@
 services:
-  default: &default
+
+  default:
+    image: placeholder
     restart: unless-stopped
     environment:
-      - USER_UID=${UID:-1000}
-      - USER_GID=${GID:-1000}
-      - TZ=America/New_York
+      USER_UID: ${UID:-1000}
+      USER_GID: ${GID:-1000}
+      TZ: America/New_York
     env_file:
-      - ../.env #uses system-wide variables as-needed
+      - ../.env
       - .env
     security_opt:
       - no-new-privileges:true
@@ -14,21 +16,18 @@ services:
       - NET_RAW
       - NET_ADMIN
   
-  web_ui: &web_ui
+  arr_default:
+    extends: default
     labels:
       traefik.enable: "true"
-
-  mnt_access: &mnt_access
     volumes:
       - "${MOUNT}:/data"
 
-  gpu: &gpu_access
+  arr_transcoding:
+    extends: arr_default
     devices:
       - /dev/kfd:/dev/kfd
       - /dev/dri:/dev/dri
     group_add:
       - "987"  # render
       - "983"  # video
-  
-
-  

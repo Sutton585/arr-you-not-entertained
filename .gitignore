@@ -1,4 +1,5 @@
 # Secrets & Env files
+.__*
 .env
 .env.*
 !.env.example
